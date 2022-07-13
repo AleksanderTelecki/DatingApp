@@ -16,8 +16,10 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         public ITokenService _tokenService { get; }
-        public AccountController(DataContext context,ITokenService tokenService) : base(context)
+        private readonly DataContext _context;
+        public AccountController(DataContext context,ITokenService tokenService) 
         {
+            this._context = context;
             _tokenService = tokenService;
             
         }
