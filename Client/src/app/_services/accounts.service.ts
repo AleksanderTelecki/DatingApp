@@ -33,6 +33,11 @@ export class AccountsService {
     this.currentUserSource.next(user);
   }
 
+  logout() {
+    localStorage.removeItem('user');
+    this.currentUserSource.next(null);
+  }
+
   register(model:any){
     return this.http.post(this.baseUrl+'account/register/',model).pipe(
       map((response:User)=>{
