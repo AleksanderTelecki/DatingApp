@@ -1,1 +1,20 @@
-<p>photo-managment works!</p>
+<div class="row">
+    <table class="table">
+        <tr>
+            <th style="width: 30%;">Photo</th>
+            <th style="width: 40%;">Username</th>
+            <th style="width: 30%;"></th>
+        </tr>
+        <tr *ngFor="let user of users">
+            <td>
+                <img src="{{user.photoUrl || './assets/user.png'}}" alt="{{user.UserName}}" class="img-circle rounded-circle mr-2">
+            </td>
+            <td>{{user.userName}}</td>
+            <td>
+                <button routerLink="/admin/member-edit/{{user.userName}}" class="btn btn-info">
+                    Edit User
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>

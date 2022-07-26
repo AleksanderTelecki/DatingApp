@@ -81,6 +81,7 @@ export class MembersService {
 
   cleanMembers(){
     this.members = [];
+    this.memberCache = new Map();
   }
 
   setMainPhoto(photoId:number){

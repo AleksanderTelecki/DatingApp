@@ -47,8 +47,15 @@ namespace API.Data
            _context.Entry(user).State = EntityState.Modified;
         }
 
-        public async Task<MemberDto> GetMemberAsync(string username)
-        {
+        public async Task<MemberDto> GetMemberAsync(string username,string callerUserName)
+        {   
+            if(username == callerUserName){
+                return await _context.Users.IgnoreQueryFilters()
+                .Where(x=>x.UserName == username)
+                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+            }
+            
             return await _context.Users.Where(x=>x.UserName == username).ProjectTo<MemberDto>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
         }
 
@@ -75,6 +82,11 @@ namespace API.Data
         public async Task<string> GetUserGender(string username)
         {
             return await _context.Users.Where(x=>x.UserName==username).Select(x=>x.Gender).FirstOrDefaultAsync();
+        }
+
+        public void DeleteUser(AppUser appUser)
+        {
+            _context.Users.Remove(appUser);
         }
     }
 }

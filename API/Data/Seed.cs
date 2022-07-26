@@ -31,6 +31,12 @@ namespace API.Data
                await userManager.AddToRoleAsync(user,"Member");
             }
 
+            foreach(var user in users){
+                foreach(var photo in user.Photos){
+                    photo.IsApproved = true;
+                }
+            }
+
             var admin = new AppUser{
                 UserName = "admin",
 
