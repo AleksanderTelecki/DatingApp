@@ -88,5 +88,13 @@ namespace API.Data
         {
             _context.Users.Remove(appUser);
         }
+
+        public async Task<IEnumerable<Photo>> GetPhotosForUserWithoutQueryFilters(string username)
+        {
+            var user = await _context.Users.IgnoreQueryFilters()
+            .Include(p=>p.Photos)
+            .SingleOrDefaultAsync(user => user.UserName == username);
+            return user.Photos;
+        }
     }
 }

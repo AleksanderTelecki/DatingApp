@@ -28,8 +28,7 @@ export class AdminMemberEditComponent implements OnInit {
     const username = routeParams.get('username');
     this.adminService.getUserWithPhotos(username).subscribe({
       next:response=>{
-        this.member = response
-        console.log(response);
+        this.member = response;
       }
     });
   }

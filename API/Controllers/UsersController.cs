@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Extensions;
 using API.Helpers;
@@ -8,7 +6,6 @@ using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -116,8 +113,8 @@ namespace API.Controllers
 
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId){
-            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photos = await _unitOfWork.UserRepository.GetPhotosForUserWithoutQueryFilters(User.GetUsername());
+            var photo = photos.FirstOrDefault(x => x.Id == photoId);
             if (photo==null)
             {
                 return NotFound();    
@@ -136,7 +133,7 @@ namespace API.Controllers
                 }
             }
              
-            user.Photos.Remove(photo);
+            _unitOfWork.PhotoRepository.DeletePhoto(photo);
             if(await _unitOfWork.Complete()) return Ok();
 
             return BadRequest("Failed to delete photo");

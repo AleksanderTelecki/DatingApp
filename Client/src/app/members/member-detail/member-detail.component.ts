@@ -76,7 +76,6 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
         medium:photo?.url,
         big:photo?.url
       })
-      console.log(photo);
     }
     return imageUrls;
   }

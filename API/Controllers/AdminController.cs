@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -98,6 +99,7 @@ namespace API.Controllers
             return Ok(user);
         }
 
+        [Authorize(Policy = "ModerateRole")]
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto){
 
@@ -132,6 +134,71 @@ namespace API.Controllers
             
         }
 
+        [Authorize(Policy = "ModerateRole")]
+        [HttpDelete("users-to-moderate/photos/{photoId}")]
+        public async Task<ActionResult> DeleteUserPhoto(int photoId){
+
+            var photo = await _unitOfWork.PhotoRepository.GetPhotoWihoutQueryFilters(photoId);
+
+            if (photo==null)
+            {
+                return NotFound();    
+            }
+
+            if (photo.IsMain)
+            {
+                return BadRequest("You cant't delete your main photo");
+            }
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if(result.Error!=null){
+                    return BadRequest(result.Error.Message);
+                }
+            }
+             
+             _unitOfWork.PhotoRepository.DeletePhoto(photo);
+
+            if(await _unitOfWork.Complete()) return Ok();
+
+            return BadRequest("Failed to delete photo");
+        }
+
+
+         [Authorize(Policy = "ModerateRole")]
+         [HttpPatch("users-to-moderate/photos/")]
+         public async Task<ActionResult> ApprovePhoto(PhotoApproveDto photoApproveDto){
+            var user = await _userManager.Users
+            .IgnoreQueryFilters()
+            .Where(x=>x.UserName == photoApproveDto.UserName)
+            .Include(p => p.Photos).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var photo = user.Photos.FirstOrDefault(x=>x.Id==photoApproveDto.PhotoId);
+
+            if (photo==null)
+            {
+                return NotFound();
+            }
+
+            photo.IsApproved = true;
+
+            if (user.Photos.Count == 1)
+            {
+                photo.IsMain = true;
+            }
+
+            if(await _unitOfWork.Complete()) return Ok();
+
+            return BadRequest("Failed to delete photo");
+
+
+         }
         
 
 

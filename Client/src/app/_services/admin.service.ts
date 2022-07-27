@@ -36,4 +36,13 @@ export class AdminService {
   deleteMember(member:Member){
     return this.http.delete(this.baseUrl+'admin/users-to-moderate/'+member.userName);
   }
+
+  deletePhoto(photoId:number){
+    return this.http.delete(this.baseUrl+'admin/users-to-moderate/photos/'+photoId);
+  }
+
+  approvePhoto(photoId:number,username:string){
+    return this.http.patch(this.baseUrl+'admin/users-to-moderate/photos/',{userName:username,photoId})
+  }
+
 }

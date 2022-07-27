@@ -18,6 +18,7 @@ namespace API.Interfaces
         Task<MemberDto> GetMemberAsync(string username, string callerUserName);
         Task<string> GetUserGender(string username);
         void DeleteUser(AppUser appUser);
+        Task<IEnumerable<Photo>> GetPhotosForUserWithoutQueryFilters(string username);
 
 
     }
