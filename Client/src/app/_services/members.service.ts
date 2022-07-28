@@ -23,6 +23,10 @@ export class MembersService {
   userParams:UserParams;
   
   constructor(private http:HttpClient, private accountsService:AccountsService) {
+    this.createUserParams();
+   }
+
+   createUserParams(){
     this.accountsService.currentUser$.pipe(first()).subscribe({
       next:user=>{
         this.user=user;

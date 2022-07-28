@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Vali
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountsService } from '../_services/accounts.service';
+import { MembersService } from '../_services/members.service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,7 @@ export class RegisterComponent implements OnInit {
   maxDate:Date;
   validationErrors:string[] = [];
 
-  constructor(private accountService:AccountsService, private toastr: ToastrService, private fb:FormBuilder, private router:Router) { }
+  constructor(private memberService:MembersService,private accountService:AccountsService, private toastr: ToastrService, private fb:FormBuilder, private router:Router) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -54,6 +55,7 @@ export class RegisterComponent implements OnInit {
   register(){
     this.accountService.register(this.registerForm.value).subscribe({
       next: response=>{
+        this.memberService.createUserParams();
         this.router.navigateByUrl('/members');
       },
       error: error=>{
