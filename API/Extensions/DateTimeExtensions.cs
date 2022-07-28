@@ -9,7 +9,7 @@ namespace API.Extensions
     {
         public static int CalculateAge(this DateTime birthdate){
             
-            var today = DateTime.Today;
+            var today = DateTime.Today.ToUniversalTime();
             var age = today.Year - birthdate.Year;
             if (birthdate.Date > today.AddYears(-age)) age--;
 
